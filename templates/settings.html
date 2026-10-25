@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Settings & System Preferences - CyberShield AI{% endblock %}
+
+{% block content %}
+<div class="section-header">
+  <h2 class="section-title">
+    <i class="fas fa-sliders text-cyan"></i>
+    System Settings & Preferences
+  </h2>
+  <div class="section-subtitle">Configure interface themes, API credentials, display parameters, and dataset telemetry</div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <!-- General Preferences Form -->
+    <div class="glass-panel p-4 mb-4">
+      <h5 class="fw-bold mb-3"><i class="fas fa-palette text-cyan me-2"></i>Interface & Display Preferences</h5>
+      <form id="formGeneralPreferences">
+        <!-- Theme selection -->
+        <div class="mb-4">
+          <label class="form-label small fw-semibold">Interface Color Theme</label>
+          <div class="d-flex gap-3">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="themeOption" id="themeDark" value="dark" checked>
+              <label class="form-check-label" for="themeDark">
+                <i class="fas fa-moon me-1 text-cyan"></i> Cyber Dark (Default)
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="themeOption" id="themeLight" value="light">
+              <label class="form-check-label" for="themeLight">
+                <i class="fas fa-sun me-1 text-warning"></i> Daylight Clean
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Incident Table Page Size -->
+        <div class="mb-4">
+          <label class="form-label small fw-semibold" for="prefPageSize">Default Incidents Table Page Size</label>
+          <select id="prefPageSize" class="form-select" style="max-width: 200px;">
+            <option value="10" selected>10 Records per page</option>
+            <option value="25">25 Records per page</option>
+            <option value="50">50 Records per page</option>
+            <option value="100">100 Records per page</option>
+          </select>
+        </div>
+
+        <!-- Optional AI API Key -->
+        <div class="mb-4">
+          <label class="form-label small fw-semibold" for="prefGeminiApiKey">
+            Google Gemini API Key (Optional AI Threat Advisor)
+          </label>
+          <div class="input-group">
+            <span class="input-group-text bg-secondary border-secondary text-muted"><i class="fas fa-key"></i></span>
+            <input type="password" id="prefGeminiApiKey" class="form-control" placeholder="Enter Gemini API key (optional)">
+          </div>
+          <div class="text-muted small mt-1">
+            If left blank, CyberShield AI operates seamlessly using its built-in heuristic threat reasoning engine!
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-cyber-primary btn-sm">
+          <i class="fas fa-save me-1"></i> Save Preferences
+        </button>
+      </form>
+    </div>
+
+    <!-- Telemetry & Demonstration Data Management -->
+    <div class="glass-panel p-4">
+      <h5 class="fw-bold mb-3"><i class="fas fa-database text-cyan me-2"></i>Dataset Telemetry Controls</h5>
+      <p class="text-muted small mb-4">
+        Safely manage sample demonstration incidents versus imported production datasets. 
+        Clearing demonstration records preserves any imported CSV records.
+      </p>
+
+      <div class="d-flex gap-3 flex-wrap">
+        <button class="btn btn-outline-warning btn-sm" id="btnClearDemoData">
+          <i class="fas fa-trash-can me-1"></i> Clear Demonstration Data Only
+        </button>
+        <button class="btn btn-cyber-outline btn-sm" id="btnResetDemoData">
+          <i class="fas fa-rotate me-1"></i> Restore Sample Dataset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <!-- Application Runtime Telemetry Card -->
+    <div class="glass-panel p-4 mb-4">
+      <h5 class="fw-bold mb-3"><i class="fas fa-server text-cyan me-2"></i>Runtime Environment</h5>
+      <div class="table-responsive">
+        <table class="table table-sm table-borderless text-muted mb-0" style="font-size: 0.88rem;">
+          <tbody>
+            <tr>
+              <td>Platform Version:</td>
+              <td class="text-end fw-bold text-info">v2.5.0</td>
+            </tr>
+            <tr>
+              <td>Backend Engine:</td>
+              <td class="text-end fw-semibold">Flask / Python 3.14</td>
+            </tr>
+            <tr>
+              <td>Database:</td>
+              <td class="text-end fw-semibold">SQLite 3 (ACID Indexed)</td>
+            </tr>
+            <tr>
+              <td>Upload Boundary:</td>
+              <td class="text-end fw-semibold">5.0 MB</td>
+            </tr>
+            <tr>
+              <td>Reporting Engine:</td>
+              <td class="text-end fw-semibold">ReportLab PDF Dynamic</td>
+            </tr>
+            <tr>
+              <td>Session Security:</td>
+              <td class="text-end fw-semibold text-success"><i class="fas fa-shield me-1"></i>Active</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Production Deployment Checklist -->
+    <div class="glass-panel p-4">
+      <h5 class="fw-bold mb-3"><i class="fas fa-cloud-check text-cyan me-2"></i>Production Deployment Checklist</h5>
+      <ul class="text-muted ps-3 mb-0 small" style="line-height: 1.8;">
+        <li>Set <code>FLASK_ENV=production</code> and <code>DEBUG=False</code> in <code>.env</code>.</li>
+        <li>Generate a cryptographically random <code>SECRET_KEY</code>.</li>
+        <li>Deploy behind a reverse proxy (e.g. Nginx, Caddy) with TLS/HTTPS.</li>
+        <li>Use WSGI production runners like Gunicorn or Waitress on Windows.</li>
+        <li>Mount persistent volume for <code>instance/cybersecurity.db</code>.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Clear Demo Confirmation Modal -->
+<div class="modal fade" id="confirmClearDemoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content cyber-modal">
+      <div class="modal-body p-4 text-center">
+        <i class="fas fa-triangle-exclamation text-warning fs-1 mb-3"></i>
+        <h5 class="fw-bold mb-2">Clear Demo Telemetry?</h5>
+        <p class="text-muted small">
+          This will purge all synthetic demonstration incidents. Your imported user CSV records will be retained.
+        </p>
+        <div class="d-flex justify-content-center gap-2 mt-4">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-warning btn-sm" id="btnConfirmClearDemo">Clear Demo Records</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

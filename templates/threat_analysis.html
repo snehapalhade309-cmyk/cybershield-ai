@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Threat Analysis & Prioritization - CyberShield AI{% endblock %}
+
+{% block content %}
+<div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+  <div>
+    <h2 class="section-title">
+      <i class="fas fa-biohazard text-cyan"></i>
+      Threat Vector Analysis & Triage Prioritization
+    </h2>
+    <div class="section-subtitle">Deep category analytics, transparent 0–100 heuristic risk scoring, and AI-assisted posture advisory</div>
+  </div>
+
+  <button class="btn btn-cyber-primary btn-sm" id="btnRefreshThreats">
+    <i class="fas fa-sync-alt me-1"></i> Recalculate Risk Scores
+  </button>
+</div>
+
+<!-- AI Security Advisor Intelligence Card -->
+<div class="glass-panel p-4 mb-4 position-relative overflow-hidden" style="border-left: 4px solid var(--purple);">
+  <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+    <div class="d-flex align-items-center gap-2">
+      <div class="kpi-icon-box bg-purple bg-opacity-20 text-purple">
+        <i class="fas fa-robot fs-5"></i>
+      </div>
+      <div>
+        <h5 class="fw-bold m-0">CyberShield AI Security Advisor</h5>
+        <div class="text-muted small" id="aiAdvisorEngineLabel">Powered by CyberShield Heuristic Reasoning</div>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="text-muted small">Threat Posture:</span>
+      <span class="badge bg-danger fs-6" id="aiPostureBadge">Analyzing...</span>
+    </div>
+  </div>
+
+  <p class="text-muted mb-3" id="aiAdvisorSummaryText" style="font-size: 0.95rem;">
+    Evaluating active telemetry vectors across identities, databases, and perimeter infrastructure...
+  </p>
+
+  <h6 class="fw-bold text-cyan small mb-2"><i class="fas fa-shield-halved me-1"></i> Recommended Tactical Mitigations:</h6>
+  <ul id="aiAdvisorRecsList" class="mb-0 text-muted small ps-3">
+    <li>Loading AI recommendations...</li>
+  </ul>
+</div>
+
+<!-- Category Deep Dive Matrix -->
+<div class="glass-panel p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold m-0"><i class="fas fa-layer-group text-cyan me-2"></i>Attack Category Deep Dive Matrix</h5>
+    <span class="text-muted small">Aggregated by Incident Type</span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="cyber-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Total Events</th>
+          <th>Critical / High</th>
+          <th>Open Triage</th>
+          <th>Avg Resolution</th>
+          <th>Primary Detection Source</th>
+          <th>Top Target Asset</th>
+          <th>Risk Rating</th>
+        </tr>
+      </thead>
+      <tbody id="categoryDeepDiveBody">
+        <tr><td colspan="8" class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Loading category telemetry...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Heuristic Prioritization Scoring Formula Documentation -->
+<div class="glass-panel p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="fw-bold m-0"><i class="fas fa-calculator text-cyan me-2"></i>Transparent Heuristic Risk Prioritization Model (0–100)</h5>
+    <span class="badge bg-secondary">Deterministic Rule Engine</span>
+  </div>
+  <p class="text-muted small mb-3">
+    To assist security analysts with immediate triage without black-box bias, every incident is evaluated against four documented heuristic dimensions:
+  </p>
+
+  <div class="row g-3">
+    <div class="col-md-3 col-sm-6">
+      <div class="p-3 glass-panel h-100">
+        <div class="fw-bold text-danger mb-1">1. Severity Tier (Max 45)</div>
+        <div class="text-muted small">Critical: 45 pts<br>High: 30 pts<br>Medium: 15 pts<br>Low: 5 pts</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="p-3 glass-panel h-100">
+        <div class="fw-bold text-warning mb-1">2. Status State (Max 25)</div>
+        <div class="text-muted small">Open (Unassigned): +25 pts<br>In Progress: +15 pts<br>Resolved / Closed: 0 pts</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="p-3 glass-panel h-100">
+        <div class="fw-bold text-info mb-1">3. Asset Impact (Max 15)</div>
+        <div class="text-muted small">Crown jewel asset (DC, Database, S3, Core Router): +15 pts<br>Standard asset: +5 pts</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="p-3 glass-panel h-100">
+        <div class="fw-bold text-purple mb-1">4. Alert Age (Max 15)</div>
+        <div class="text-muted small">Aging unresolved &gt;7 days: +15 pts<br>Aging &gt;2 days: +10 pts<br>Recent alert: +5 pts</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Prioritized Incident Queue -->
+<div class="glass-panel p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold m-0"><i class="fas fa-list-ol text-cyan me-2"></i>Top Priority Incidents for Investigation</h5>
+    <span class="text-muted small">Ranked by Heuristic Prioritization Score</span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="cyber-table">
+      <thead>
+        <tr>
+          <th>Risk Score</th>
+          <th>Priority Tier</th>
+          <th>Incident ID</th>
+          <th>Category</th>
+          <th>Severity</th>
+          <th>Affected Asset</th>
+          <th>Status</th>
+          <th>Formula Factor Breakdown</th>
+        </tr>
+      </thead>
+      <tbody id="prioritizedIncidentsBody">
+        <tr><td colspan="8" class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Computing prioritization rankings...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  loadThreatAnalysis();
+  document.getElementById("btnRefreshThreats")?.addEventListener("click", () => {
+    loadThreatAnalysis();
+    showToast("Threat calculations updated", "success");
+  });
+});
+
+async function loadThreatAnalysis() {
+  const apiKey = localStorage.getItem("cybershield_gemini_key") || "";
+
+  try {
+    const [resDeepDive, resPriorities, resAI] = await Promise.all([
+      fetch("/api/threats/deep-dive").then(r => r.json()),
+      fetch("/api/threats/priorities").then(r => r.json()),
+      fetch(`/api/ai/advisor?api_key=${encodeURIComponent(apiKey)}`).then(r => r.json())
+    ]);
+
+    if (resDeepDive.success) renderDeepDive(resDeepDive.data);
+    if (resPriorities.success) renderPriorities(resPriorities.data);
+    if (resAI.success) renderAI(resAI.data);
+
+  } catch (err) {
+    console.error("Threat analysis load error:", err);
+    showToast("Error retrieving threat data", "danger");
+  }
+}
+
+function renderAI(data) {
+  document.getElementById("aiPostureBadge").innerText = data.threat_posture;
+  document.getElementById("aiAdvisorSummaryText").innerText = data.summary;
+  document.getElementById("aiAdvisorEngineLabel").innerText = `Engine: ${data.source}`;
+
+  const recsList = document.getElementById("aiAdvisorRecsList");
+  if (data.recommendations && data.recommendations.length > 0) {
+    recsList.innerHTML = data.recommendations.map(r => `<li class="mb-1">${r}</li>`).join("");
+  }
+}
+
+function renderDeepDive(items) {
+  const tbody = document.getElementById("categoryDeepDiveBody");
+  if (!items || items.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No category telemetry available.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = items.map(cat => {
+    return `
+      <tr>
+        <td class="fw-bold">${cat.category}</td>
+        <td><span class="badge bg-secondary font-monospace">${cat.total_count}</span></td>
+        <td class="text-danger fw-semibold">${cat.critical_high_count}</td>
+        <td class="text-warning">${cat.open_count}</td>
+        <td>${cat.avg_resolution_hours ? `${cat.avg_resolution_hours}h` : 'N/A'}</td>
+        <td class="text-muted">${cat.top_source}</td>
+        <td><code>${cat.top_system}</code></td>
+        <td><span class="badge bg-${cat.risk_badge}">${cat.risk_level}</span></td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function renderPriorities(items) {
+  const tbody = document.getElementById("prioritizedIncidentsBody");
+  if (!items || items.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No incidents found to prioritize.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = items.map(item => {
+    return `
+      <tr>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fs-5 fw-bold text-cyan font-monospace">${item.priority_score}</span>
+            <span class="text-muted small">/100</span>
+          </div>
+        </td>
+        <td><span class="badge bg-${item.priority_badge}">${item.priority_urgency}</span></td>
+        <td class="font-monospace fw-bold text-info">${item.incident_id}</td>
+        <td>${item.incident_type}</td>
+        <td><span class="badge badge-${item.severity.toLowerCase()}">${item.severity}</span></td>
+        <td><code>${item.affected_system || 'N/A'}</code></td>
+        <td><span class="badge badge-${item.status.toLowerCase().replace(' ', '-')}">${item.status}</span></td>
+        <td class="text-muted small" style="max-width: 280px;">${item.priority_explanation}</td>
+      </tr>
+    `;
+  }).join("");
+}
+</script>
+{% endblock %}

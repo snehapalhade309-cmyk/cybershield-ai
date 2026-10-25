@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Dataset Ingestion & Cleaning - CyberShield AI{% endblock %}
+
+{% block content %}
+<div class="section-header">
+  <h2 class="section-title">
+    <i class="fas fa-cloud-arrow-up text-cyan"></i>
+    Dataset Ingestion & 15-Stage Data Cleaning
+  </h2>
+  <div class="section-subtitle">Safely parse, audit, clean, normalize, and ingest incident telemetry into SQLite</div>
+</div>
+
+<!-- Upload Drop Zone Card -->
+<div class="glass-panel p-5 text-center mb-4 position-relative" id="csvDropZone" style="cursor: pointer; border: 2px dashed var(--border-color); border-radius: 16px;">
+  <input type="file" id="csvFileInput" accept=".csv" class="d-none">
+  <i class="fas fa-file-csv fs-1 text-cyan mb-3" style="filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.4));"></i>
+  <h4 class="fw-bold mb-2">Drag & Drop Incident CSV Dataset Here</h4>
+  <p class="text-muted mb-3" style="max-width: 500px; margin: 0 auto; font-size: 0.92rem;">
+    Supports standard CSV formats with security telemetry. Max upload file size: 5 MB.
+  </p>
+  <button type="button" class="btn btn-cyber-primary btn-sm">
+    <i class="fas fa-folder-open me-1"></i> Browse Local Files
+  </button>
+</div>
+
+<!-- Selected File Information -->
+<div id="fileInfoCard" class="glass-panel p-3 mb-4 d-none">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div class="d-flex align-items-center gap-3">
+      <div class="kpi-icon-box bg-info bg-opacity-10 text-cyan">
+        <i class="fas fa-file-code"></i>
+      </div>
+      <div>
+        <div class="fw-bold" id="selectedFileName">dataset.csv</div>
+        <div class="text-muted small" id="selectedFileSize">0 KB</div>
+      </div>
+    </div>
+    <span class="badge bg-success"><i class="fas fa-check me-1"></i> Verified MIME & Size</span>
+  </div>
+</div>
+
+<!-- Stage 3-11 Inspection & Audit Section -->
+<div id="uploadInspectionSection" class="d-none">
+  <!-- Loading Spinner -->
+  <div id="inspectionLoadingSpinner" class="glass-panel p-5 text-center my-4">
+    <i class="fas fa-spinner fa-spin fs-2 text-cyan mb-3"></i>
+    <div class="fw-semibold">Auditing CSV Schema, Dates, Enums & Duplicate Rows...</div>
+  </div>
+
+  <!-- Inspection Details Card -->
+  <div id="inspectionDetails" class="glass-panel p-4 mb-4 d-none">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <h5 class="fw-bold m-0"><i class="fas fa-clipboard-check text-cyan me-2"></i>Dataset Inspection & Audit Report</h5>
+      <span class="text-muted small">Stages 4 to 11 Complete</span>
+    </div>
+
+    <!-- Schema Validation Alert -->
+    <div id="schemaValidationBadge"></div>
+
+    <!-- Metric Audit Counters -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3 col-6">
+        <div class="glass-panel p-3 text-center">
+          <div class="text-muted small">Total Rows Detected</div>
+          <div class="fs-4 fw-bold text-info" id="summaryTotalRows">0</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="glass-panel p-3 text-center">
+          <div class="text-muted small">Duplicate Rows</div>
+          <div class="fs-4 fw-bold text-warning" id="summaryDuplicates">0</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="glass-panel p-3 text-center">
+          <div class="text-muted small">Invalid Date Formats</div>
+          <div class="fs-4 fw-bold text-danger" id="summaryInvalidDates">0</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="glass-panel p-3 text-center">
+          <div class="text-muted small">Non-Standard Severities</div>
+          <div class="fs-4 fw-bold text-warning" id="summaryInvalidSeverities">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cleaning Options (Stage 10) -->
+    <div class="glass-panel p-3 mb-4">
+      <h6 class="fw-bold mb-3"><i class="fas fa-wand-magic-sparkles text-cyan me-2"></i>Data Cleaning Options</h6>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="optDeduplicate" checked>
+            <label class="form-check-label small" for="optDeduplicate">
+              <strong>Drop Duplicates:</strong> Discard exact duplicate records automatically.
+            </label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="optFillMissing" checked>
+            <label class="form-check-label small" for="optFillMissing">
+              <strong>Fill Missing Fields:</strong> Supply standard defaults for unpopulated optional cells.
+            </label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="optNormalizeEnums" checked>
+            <label class="form-check-label small" for="optNormalizeEnums">
+              <strong>Normalize Enums:</strong> Map aliases (e.g. "warn" -> "Medium", "mitigated" -> "Resolved").
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CSV Row Preview Table -->
+    <h6 class="fw-bold mb-2"><i class="fas fa-eye text-cyan me-2"></i>Preview First 5 Records</h6>
+    <div class="table-responsive glass-panel p-0 mb-4 overflow-hidden">
+      <table class="cyber-table">
+        <thead id="previewTableHead"></thead>
+        <tbody id="previewTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Proceed Action -->
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-cyber-primary" id="btnProceedImport">
+        <i class="fas fa-file-import me-1"></i> Proceed to Transactional Ingest
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Stage 14: Import Success Summary -->
+<div id="importSuccessSection" class="glass-panel p-4 mb-4 d-none">
+  <div class="text-center py-4">
+    <div class="kpi-icon-box bg-success bg-opacity-20 text-success mx-auto mb-3" style="width: 64px; height: 64px;">
+      <i class="fas fa-circle-check fs-2"></i>
+    </div>
+    <h3 class="fw-bold mb-2">Ingestion Complete</h3>
+    <p class="text-muted" style="max-width: 500px; margin: 0 auto;">
+      All valid incident records have been committed to SQLite persistent storage with ACID transaction guarantees.
+    </p>
+
+    <div class="d-flex justify-content-center gap-4 my-4">
+      <div class="p-3 glass-panel text-center" style="min-width: 150px;">
+        <div class="text-muted small">Imported & Stored</div>
+        <div class="fs-2 fw-bold text-success" id="resultImportedCount">0</div>
+      </div>
+      <div class="p-3 glass-panel text-center" style="min-width: 150px;">
+        <div class="text-muted small">Rejected / Invalid</div>
+        <div class="fs-2 fw-bold text-danger" id="resultRejectedCount">0</div>
+      </div>
+    </div>
+
+    <div id="rejectionNoticeCard" class="alert alert-warning text-start mb-4 d-none" style="max-width: 700px; margin: 0 auto;">
+      <strong>Rejected Records Log:</strong>
+      <ul id="rejectedReasonsList" class="mb-0 mt-2 small"></ul>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3">
+      <a href="/incidents" class="btn btn-cyber-primary">
+        <i class="fas fa-shield-halved me-1"></i> View in Incident Explorer
+      </a>
+      <a href="/dashboard" class="btn btn-cyber-outline">
+        <i class="fas fa-chart-pie me-1"></i> Open Dashboard Analytics
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal (Stage 12) -->
+<div class="modal fade" id="confirmImportModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content cyber-modal">
+      <div class="modal-header cyber-modal-header">
+        <h5 class="modal-title fw-bold">Confirm Database Ingestion</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <p class="text-muted">
+          You are about to clean and ingest verified records into persistent database storage. 
+          Existing records with identical incident IDs will be safely synchronized.
+        </p>
+        <div class="alert alert-info small mb-0">
+          <i class="fas fa-info-circle me-1"></i> SQLite database transactions are active. An unexpected failure will roll back cleanly.
+        </div>
+      </div>
+      <div class="modal-footer cyber-modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-cyber-primary btn-sm" id="btnExecuteImport">
+          <i class="fas fa-file-import me-1"></i> Confirm & Ingest
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endblock %}

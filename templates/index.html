@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}CyberShield AI - Turn Cyber Threats Into Actionable Intelligence{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <div class="hero-tag">
+    <div class="pulse-dot"></div>
+    <span>Next-Generation Incident Analytics Engine</span>
+  </div>
+
+  <h1 class="display-4 fw-bold mb-3 hero-gradient-text">
+    Turn Cyber Threats Into Actionable Intelligence.
+  </h1>
+
+  <p class="lead text-muted mx-auto mb-4" style="max-width: 780px; font-size: 1.15rem;">
+    CyberShield AI ingests, normalizes, and visualizes cybersecurity incident records across enterprise infrastructure. 
+    Identify malicious attack patterns, prioritize high-risk triage targets, and generate audit-grade analytical reports.
+  </p>
+
+  <div class="d-flex justify-content-center gap-3 flex-wrap mb-5">
+    <a href="/dashboard" class="btn btn-cyber-primary btn-lg px-4">
+      <i class="fas fa-chart-line me-2"></i>Explore Security Dashboard
+    </a>
+    <a href="/upload" class="btn btn-cyber-outline btn-lg px-4">
+      <i class="fas fa-file-csv me-2"></i>Analyze Incident Dataset
+    </a>
+  </div>
+
+  <!-- Real-time database telemetry badge -->
+  <div class="d-inline-flex align-items-center gap-3 p-2 px-4 rounded-pill glass-panel mb-5">
+    <span class="badge bg-info text-dark font-monospace px-3 py-2 fs-6">{{ incident_count }} Records</span>
+    <span class="text-muted" style="font-size: 0.9rem;">
+      <i class="fas fa-database text-cyan me-1"></i> Active Persistent SQLite Telemetry
+      <span class="badge bg-secondary ms-2" style="font-size: 0.72rem;">Includes Synthetic Academic Demo Data</span>
+    </span>
+  </div>
+</div>
+
+<!-- High-Tech Cyber Overview Showcase Grid -->
+<div class="row g-4 mb-5">
+  <div class="col-lg-4 col-md-6">
+    <div class="glass-panel p-4 h-100 position-relative overflow-hidden">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="kpi-icon-box bg-danger bg-opacity-20 text-danger">
+          <i class="fas fa-shield-virus fs-4"></i>
+        </div>
+        <h5 class="fw-bold m-0">Multi-Vector Triage</h5>
+      </div>
+      <p class="text-muted" style="font-size: 0.92rem;">
+        Correlate diverse attack categories including Phishing, LockBit Ransomware, DDoS floods, and Credential Stuffing across firewalls, WAFs, and endpoint sensors.
+      </p>
+      <div class="d-flex gap-2 flex-wrap mt-3">
+        <span class="badge badge-critical">Critical Alerts</span>
+        <span class="badge badge-high">High Risk</span>
+        <span class="badge bg-secondary">IOC Traces</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4 col-md-6">
+    <div class="glass-panel p-4 h-100 position-relative overflow-hidden">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="kpi-icon-box bg-info bg-opacity-20 text-cyan">
+          <i class="fas fa-brain fs-4"></i>
+        </div>
+        <h5 class="fw-bold m-0">Rule & AI Prioritization</h5>
+      </div>
+      <p class="text-muted" style="font-size: 0.92rem;">
+        Compute transparent 0–100 Prioritization Scores based on severity tiers, unresolved operational aging, and high-impact target systems.
+      </p>
+      <div class="d-flex gap-2 flex-wrap mt-3">
+        <span class="badge badge-medium">Heuristic Engine</span>
+        <span class="badge bg-primary">Gemini Advisor</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4 col-md-6">
+    <div class="glass-panel p-4 h-100 position-relative overflow-hidden">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="kpi-icon-box bg-success bg-opacity-20 text-success">
+          <i class="fas fa-file-shield fs-4"></i>
+        </div>
+        <h5 class="fw-bold m-0">Audit-Grade Reports</h5>
+      </div>
+      <p class="text-muted" style="font-size: 0.92rem;">
+        Generate dynamic executive summary reports on demand with ReportLab PDF compilation, CSV extracts, and time-series resolution KPI metrics.
+      </p>
+      <div class="d-flex gap-2 flex-wrap mt-3">
+        <span class="badge bg-success bg-opacity-20 text-success">ReportLab PDF</span>
+        <span class="badge bg-info bg-opacity-20 text-info">CSV Export</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Visual Cybersecurity Graphic Banner -->
+<div class="glass-panel p-4 mb-5 position-relative overflow-hidden">
+  <div class="row align-items-center">
+    <div class="col-md-7">
+      <h3 class="fw-bold mb-2">SOC Telemetry & Temporal Matrix Analysis</h3>
+      <p class="text-muted mb-3" style="font-size: 0.95rem;">
+        Analyze incident distribution across 7 days of the week and 24 hourly buckets to uncover recurring adversarial operational windows and abnormal off-hours network activity.
+      </p>
+      <div class="d-flex gap-3">
+        <a href="/visualizations" class="btn btn-cyber-outline btn-sm">
+          <i class="fas fa-chart-simple me-1"></i> Open Studio
+        </a>
+        <a href="/threat-analysis" class="btn btn-cyber-primary btn-sm">
+          <i class="fas fa-radar me-1"></i> Deep Dive Vectors
+        </a>
+      </div>
+    </div>
+    <div class="col-md-5 text-center mt-3 mt-md-0">
+      <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=700&q=80" 
+           alt="Cyber Security Operations Center" 
+           class="img-fluid rounded-3 border border-secondary shadow" 
+           style="max-height: 200px; width: 100%; object-fit: cover; filter: brightness(0.85) contrast(1.15);">
+    </div>
+  </div>
+</div>
+
+<!-- 5-Step Analytical Pipeline Workflow -->
+<div class="mb-5">
+  <div class="text-center mb-4">
+    <h3 class="fw-bold">Security Incident Analytics Workflow</h3>
+    <p class="text-muted" style="font-size: 0.9rem;">From raw disparate log records to verified threat mitigation intelligence</p>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg col-md-6">
+      <div class="glass-panel p-3 text-center h-100">
+        <div class="fw-bold text-info fs-5 mb-1">01</div>
+        <div class="fw-semibold mb-1">Ingest & Verify</div>
+        <div class="text-muted" style="font-size: 0.82rem;">Upload 5MB CSV with automated schema and MIME verification.</div>
+      </div>
+    </div>
+    <div class="col-lg col-md-6">
+      <div class="glass-panel p-3 text-center h-100">
+        <div class="fw-bold text-info fs-5 mb-1">02</div>
+        <div class="fw-semibold mb-1">Clean & Deduplicate</div>
+        <div class="text-muted" style="font-size: 0.82rem;">Handle missing fields, normalize enums, and isolate duplicates safely.</div>
+      </div>
+    </div>
+    <div class="col-lg col-md-6">
+      <div class="glass-panel p-3 text-center h-100">
+        <div class="fw-bold text-info fs-5 mb-1">03</div>
+        <div class="fw-semibold mb-1">Persist in SQLite</div>
+        <div class="text-muted" style="font-size: 0.82rem;">Transactional ACID writes with parameterized queries.</div>
+      </div>
+    </div>
+    <div class="col-lg col-md-6">
+      <div class="glass-panel p-3 text-center h-100">
+        <div class="fw-bold text-info fs-5 mb-1">04</div>
+        <div class="fw-semibold mb-1">Prioritize & Score</div>
+        <div class="text-muted" style="font-size: 0.82rem;">Compute risk priority 0–100 based on severity, age, and target asset.</div>
+      </div>
+    </div>
+    <div class="col-lg col-md-6">
+      <div class="glass-panel p-3 text-center h-100">
+        <div class="fw-bold text-info fs-5 mb-1">05</div>
+        <div class="fw-semibold mb-1">Visualize & Export</div>
+        <div class="text-muted" style="font-size: 0.82rem;">Interactive Chart.js visualizations and ReportLab PDF documents.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Technology Stack Badges -->
+<div class="glass-panel p-4 mb-4 text-center">
+  <h4 class="fw-bold mb-3">Enterprise-Grade Stack</h4>
+  <div class="d-flex justify-content-center gap-3 flex-wrap">
+    <span class="badge bg-secondary p-2 px-3"><i class="fab fa-python text-warning me-1"></i> Python 3.14</span>
+    <span class="badge bg-secondary p-2 px-3"><i class="fas fa-server text-info me-1"></i> Flask 3.1</span>
+    <span class="badge bg-secondary p-2 px-3"><i class="fas fa-table text-primary me-1"></i> Pandas & NumPy</span>
+    <span class="badge bg-secondary p-2 px-3"><i class="fas fa-database text-success me-1"></i> SQLite Persistent DB</span>
+    <span class="badge bg-secondary p-2 px-3"><i class="fab fa-bootstrap text-purple me-1"></i> Bootstrap 5</span>
+    <span class="badge bg-secondary p-2 px-3"><i class="fas fa-chart-pie text-cyan me-1"></i> Chart.js 4</span>
+    <span class="badge bg-secondary p-2 px-3"><i class="fas fa-file-pdf text-danger me-1"></i> ReportLab PDF</span>
+  </div>
+</div>
+{% endblock %}

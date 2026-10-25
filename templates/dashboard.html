@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Security Dashboard - CyberShield AI{% endblock %}
+
+{% block content %}
+<div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+  <div>
+    <h2 class="section-title">
+      <i class="fas fa-chart-pie text-cyan"></i>
+      Security Operations Center Dashboard
+    </h2>
+    <div class="section-subtitle">Real-time analytical insights derived from persistent incident records</div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn btn-cyber-outline btn-sm" id="btnRefreshDashboard">
+      <i class="fas fa-sync-alt me-1"></i> Refresh Telemetry
+    </button>
+    <button class="btn btn-cyber-primary btn-sm" id="btnExportDashboardCsv">
+      <i class="fas fa-file-export me-1"></i> Export Filtered CSV
+    </button>
+  </div>
+</div>
+
+<!-- Demonstration Data Warning Banner -->
+<div id="demoDataNotice" class="alert alert-info py-2 px-3 d-flex align-items-center justify-content-between mb-4 d-none glass-panel">
+  <div class="d-flex align-items-center gap-2">
+    <i class="fas fa-circle-info text-cyan fs-5"></i>
+    <span style="font-size: 0.9rem;">
+      <strong>Academic Demonstration Mode:</strong> Active records include clearly labeled synthetic demonstration events.
+      <span class="badge bg-secondary ms-2 demo-count"></span>
+    </span>
+  </div>
+  <a href="/settings" class="btn btn-sm btn-outline-info">Manage Datasets</a>
+</div>
+
+<!-- Interactive Global Filter Bar -->
+<div class="glass-panel filter-bar">
+  <form id="dashboardFilterForm" class="d-flex align-items-center gap-2 flex-wrap w-100">
+    <div class="d-flex align-items-center gap-1">
+      <label class="text-muted small fw-semibold">From:</label>
+      <input type="date" id="filterStartDate" class="form-control form-control-sm" style="max-width: 140px;">
+    </div>
+
+    <div class="d-flex align-items-center gap-1">
+      <label class="text-muted small fw-semibold">To:</label>
+      <input type="date" id="filterEndDate" class="form-control form-control-sm" style="max-width: 140px;">
+    </div>
+
+    <div class="d-flex align-items-center gap-1">
+      <label class="text-muted small fw-semibold">Category:</label>
+      <select id="filterCategory" class="form-select form-select-sm" style="max-width: 170px;">
+        <option value="all">All Categories</option>
+        <option value="Phishing">Phishing</option>
+        <option value="Ransomware">Ransomware</option>
+        <option value="Brute-force">Brute-force</option>
+        <option value="Denial-of-Service">Denial-of-Service</option>
+        <option value="Suspicious Login">Suspicious Login</option>
+        <option value="Data Breach">Data Breach</option>
+        <option value="Malware">Malware</option>
+        <option value="SQL Injection">SQL Injection</option>
+        <option value="Insider Threat">Insider Threat</option>
+      </select>
+    </div>
+
+    <div class="d-flex align-items-center gap-1">
+      <label class="text-muted small fw-semibold">Severity:</label>
+      <select id="filterSeverity" class="form-select form-select-sm" style="max-width: 140px;">
+        <option value="all">All Severities</option>
+        <option value="Critical">Critical</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+    </div>
+
+    <div class="d-flex align-items-center gap-1">
+      <label class="text-muted small fw-semibold">Status:</label>
+      <select id="filterStatus" class="form-select form-select-sm" style="max-width: 140px;">
+        <option value="all">All Statuses</option>
+        <option value="Open">Open</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Resolved">Resolved</option>
+        <option value="Closed">Closed</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-cyber-outline btn-sm ms-auto">
+      <i class="fas fa-filter me-1"></i> Apply Filters
+    </button>
+  </form>
+</div>
+
+<!-- 7 Core KPI Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="glass-panel kpi-card kpi-cyan">
+      <div class="kpi-header">
+        <span class="kpi-title">Total Incidents</span>
+        <div class="kpi-icon-box bg-info bg-opacity-10 text-cyan">
+          <i class="fas fa-shield-virus"></i>
+        </div>
+      </div>
+      <div class="kpi-value" id="kpiTotal">0</div>
+      <div class="kpi-footer"><i class="fas fa-database text-cyan"></i> Database records</div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="glass-panel kpi-card kpi-red">
+      <div class="kpi-header">
+        <span class="kpi-title">Critical Severity</span>
+        <div class="kpi-icon-box bg-danger bg-opacity-10 text-danger">
+          <i class="fas fa-radiation"></i>
+        </div>
+      </div>
+      <div class="kpi-value text-danger" id="kpiCritical">0</div>
+      <div class="kpi-footer"><i class="fas fa-exclamation-triangle text-danger"></i> Immediate action required</div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="glass-panel kpi-card kpi-orange">
+      <div class="kpi-header">
+        <span class="kpi-title">High Severity</span>
+        <div class="kpi-icon-box bg-warning bg-opacity-10 text-warning">
+          <i class="fas fa-triangle-exclamation"></i>
+        </div>
+      </div>
+      <div class="kpi-value text-warning" id="kpiHigh">0</div>
+      <div class="kpi-footer"><i class="fas fa-arrow-trend-up text-warning"></i> Elevated risk posture</div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="glass-panel kpi-card kpi-purple">
+      <div class="kpi-header">
+        <span class="kpi-title">Open & Active</span>
+        <div class="kpi-icon-box bg-primary bg-opacity-10 text-primary">
+          <i class="fas fa-hourglass-half"></i>
+        </div>
+      </div>
+      <div class="kpi-value" id="kpiOpen">0</div>
+      <div class="kpi-footer"><i class="fas fa-clock text-primary"></i> Pending containment</div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-md-6">
+    <div class="glass-panel kpi-card kpi-green">
+      <div class="kpi-header">
+        <span class="kpi-title">Resolved / Closed</span>
+        <div class="kpi-icon-box bg-success bg-opacity-10 text-success">
+          <i class="fas fa-circle-check"></i>
+        </div>
+      </div>
+      <div class="kpi-value text-success" id="kpiResolved">0</div>
+      <div class="kpi-footer"><i class="fas fa-shield-check text-success"></i> Remediated events</div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-md-6">
+    <div class="glass-panel kpi-card kpi-cyan">
+      <div class="kpi-header">
+        <span class="kpi-title">Resolution Rate</span>
+        <div class="kpi-icon-box bg-info bg-opacity-10 text-cyan">
+          <i class="fas fa-percent"></i>
+        </div>
+      </div>
+      <div class="kpi-value text-cyan" id="kpiResolutionRate">0%</div>
+      <div class="kpi-footer"><i class="fas fa-bullseye text-cyan"></i> Remediation efficiency</div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-md-6">
+    <div class="glass-panel kpi-card kpi-orange">
+      <div class="kpi-header">
+        <span class="kpi-title">Avg Resolution Time</span>
+        <div class="kpi-icon-box bg-warning bg-opacity-10 text-warning">
+          <i class="fas fa-stopwatch"></i>
+        </div>
+      </div>
+      <div class="kpi-value" id="kpiAvgTime">0h</div>
+      <div class="kpi-footer"><i class="fas fa-history text-warning"></i> Mean hours to resolve</div>
+    </div>
+  </div>
+</div>
+
+<!-- Visualizations Grid -->
+<div class="row g-4 mb-4">
+  <!-- Chart 1: Incident Trends Over Time -->
+  <div class="col-lg-8">
+    <div class="glass-panel p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold m-0"><i class="fas fa-chart-line text-cyan me-2"></i>Incident Volume Trends Over Time</h5>
+        <span class="badge bg-secondary" style="font-size: 0.75rem;">Daily Grouping</span>
+      </div>
+      <div style="height: 280px; position: relative;">
+        <canvas id="chartIncidentTrends"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart 2: Incident Distribution by Category -->
+  <div class="col-lg-4">
+    <div class="glass-panel p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold m-0"><i class="fas fa-chart-pie text-cyan me-2"></i>Category Breakdown</h5>
+      </div>
+      <div style="height: 280px; position: relative;">
+        <canvas id="chartCategories"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart 3: Incident Severity Distribution -->
+  <div class="col-lg-4">
+    <div class="glass-panel p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold m-0"><i class="fas fa-layer-group text-cyan me-2"></i>Severity Distribution</h5>
+      </div>
+      <div style="height: 260px; position: relative;">
+        <canvas id="chartSeverity"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart 4: Incidents Grouped by Source -->
+  <div class="col-lg-4">
+    <div class="glass-panel p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold m-0"><i class="fas fa-tower-broadcast text-cyan me-2"></i>Detection Sources</h5>
+      </div>
+      <div style="height: 260px; position: relative;">
+        <canvas id="chartSources"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart 5: Stacked Severity Trends Over Time -->
+  <div class="col-lg-4">
+    <div class="glass-panel p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold m-0"><i class="fas fa-chart-area text-cyan me-2"></i>Severity Timeline</h5>
+      </div>
+      <div style="height: 260px; position: relative;">
+        <canvas id="chartSeverityTrends"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart 6: Temporal Incident Frequency Matrix (Heatmap) -->
+  <div class="col-12">
+    <div class="glass-panel p-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="fw-bold m-0">
+          <i class="fas fa-table-cells text-cyan me-2"></i>Incident Frequency by Day & Hour (Temporal Heatmap)
+        </h5>
+        <span class="text-muted small">Highlights recurring attack vectors and off-hours activity</span>
+      </div>
+      <div id="heatmapMatrixContainer" class="heatmap-container">
+        <!-- Rendered dynamically by dashboard.js -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

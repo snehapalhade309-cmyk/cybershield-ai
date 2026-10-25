@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Visualization Studio - CyberShield AI{% endblock %}
+
+{% block content %}
+<div class="section-header">
+  <h2 class="section-title">
+    <i class="fas fa-chart-column text-cyan"></i>
+    Interactive Visualization Studio
+  </h2>
+  <div class="section-subtitle">Dynamically configure custom analytical charts, plots, and categorical projections</div>
+</div>
+
+<div class="row g-4">
+  <!-- Controls Panel -->
+  <div class="col-lg-4">
+    <div class="glass-panel p-4 h-100">
+      <h5 class="fw-bold mb-3"><i class="fas fa-sliders text-cyan me-2"></i>Chart Configuration</h5>
+
+      <div class="mb-3">
+        <label class="form-label small fw-semibold">Chart Visualization Type</label>
+        <select id="chartTypeSelect" class="form-select">
+          <option value="bar">Vertical Bar Chart</option>
+          <option value="horizontalBar">Horizontal Bar Chart</option>
+          <option value="line">Line Chart</option>
+          <option value="area">Area Chart</option>
+          <option value="doughnut">Doughnut Chart</option>
+          <option value="pie">Pie Chart</option>
+          <option value="scatter">Resolution vs Severity Scatter Plot</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label small fw-semibold">Chart Title</label>
+        <input type="text" id="chartCustomTitle" class="form-control" value="Incident Frequency Breakdown by Category">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label small fw-semibold">Primary Dimension (X-Axis)</label>
+        <select id="xAxisField" class="form-select">
+          <option value="incident_type" selected>Incident Type / Category</option>
+          <option value="severity">Severity Rating</option>
+          <option value="source">Detection Source</option>
+          <option value="status">Investigation Status</option>
+          <option value="affected_system">Affected System</option>
+          <option value="incident_date">Incident Date (Daily)</option>
+        </select>
+      </div>
+
+      <div class="mb-3 d-none" id="yAxisFieldContainer">
+        <label class="form-label small fw-semibold">Numerical Measure (Y-Axis)</label>
+        <select id="yAxisField" class="form-select">
+          <option value="resolution_time" selected>Resolution Time (Hours)</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small fw-semibold">Filter by Severity</label>
+        <select id="studioFilterSeverity" class="form-select">
+          <option value="all">All Severities</option>
+          <option value="Critical">Critical Only</option>
+          <option value="High">High Only</option>
+          <option value="Medium">Medium Only</option>
+          <option value="Low">Low Only</option>
+        </select>
+      </div>
+
+      <button class="btn btn-cyber-primary w-100 mb-3" id="btnGenerateChart">
+        <i class="fas fa-rotate me-1"></i> Generate Visualization
+      </button>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-cyber-outline btn-sm w-50" id="btnDownloadChartPng">
+          <i class="fas fa-image me-1"></i> Export PNG
+        </button>
+        <button class="btn btn-cyber-outline btn-sm w-50" id="btnExportChartCsv">
+          <i class="fas fa-file-csv me-1"></i> Export CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Studio Canvas Panel -->
+  <div class="col-lg-8">
+    <div class="glass-panel p-4 h-100 d-flex flex-column">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold m-0"><i class="fas fa-display text-cyan me-2"></i>Visualization Viewport</h5>
+        <span class="badge bg-secondary" style="font-size: 0.75rem;">Chart.js Canvas</span>
+      </div>
+
+      <div id="chartStatusMsg" class="alert alert-info py-2 d-none mb-3"></div>
+
+      <div class="flex-grow-1" style="min-height: 420px; position: relative;">
+        <canvas id="studioChartCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/visualizations.js') }}"></script>
+{% endblock %}

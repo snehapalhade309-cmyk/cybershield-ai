@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}About Project - CyberShield AI{% endblock %}
+
+{% block content %}
+<div class="section-header">
+  <h2 class="section-title">
+    <i class="fas fa-circle-info text-cyan"></i>
+    About CyberShield AI
+  </h2>
+  <div class="section-subtitle">Academic project documentation, architectural blueprints, methodology & specifications</div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-8">
+    <!-- Introduction & Problem Statement -->
+    <div class="glass-panel p-4 mb-4">
+      <h4 class="fw-bold mb-3"><i class="fas fa-bullseye text-cyan me-2"></i>1. Project Introduction & Problem Statement</h4>
+      <p class="text-muted" style="line-height: 1.7;">
+        Modern corporate networks generate overwhelming volumes of security alerts across firewalls, intrusion prevention systems, active directories, and cloud audit logs. 
+        Security analysts face alert fatigue, inconsistent event categorization, and lack of standardized severity ranking.
+      </p>
+      <p class="text-muted" style="line-height: 1.7;">
+        <strong>CyberShield AI</strong> solves this challenge by delivering an integrated, full-stack incident data analysis and visualization workbench. 
+        It provides automated 15-stage CSV ingestion, deterministic heuristic risk prioritization (0–100), interactive Chart.js visualizations, and dynamic ReportLab PDF audits.
+      </p>
+    </div>
+
+    <!-- Objectives & Scope -->
+    <div class="glass-panel p-4 mb-4">
+      <h4 class="fw-bold mb-3"><i class="fas fa-list-check text-cyan me-2"></i>2. Core Objectives & Scope</h4>
+      <ul class="text-muted ps-3 mb-0" style="line-height: 1.8;">
+        <li><strong>Dataset Normalization:</strong> Convert raw, irregular incident logs into clean, uniform schema structures with error isolation.</li>
+        <li><strong>Persistent Storage:</strong> Provide safe, parameterized SQLite operations with transactional ACID safeguards.</li>
+        <li><strong>Data Visualization:</strong> Surface interactive timelines, category doughnuts, severity bars, and day/hour activity heatmaps.</li>
+        <li><strong>Deterministic Prioritization:</strong> Implement a clear, transparent 4-factor formula scoring system without black-box opacity.</li>
+        <li><strong>Automated PDF Reporting:</strong> Dynamically generate executive security summaries using ReportLab.</li>
+      </ul>
+    </div>
+
+    <!-- System Architecture & Workflow -->
+    <div class="glass-panel p-4 mb-4">
+      <h4 class="fw-bold mb-3"><i class="fas fa-diagram-project text-cyan me-2"></i>3. System Architecture & Workflow</h4>
+      <p class="text-muted small mb-3">
+        CyberShield AI follows a clean, decoupled MVC/Services architectural pattern:
+      </p>
+      <div class="p-3 rounded glass-panel font-monospace text-info small mb-3" style="line-height: 1.6;">
+        [CSV Upload / REST API] 
+        &rarr; [Data Cleaning & Validation Service (Pandas)]
+        &rarr; [SQLite Persistent Database (Parameterized & Indexed)]
+        &rarr; [Analytics & Threat Prioritization Engine (NumPy)]
+        &rarr; [Interactive Visualizations (Chart.js)] & [Audit PDF (ReportLab)]
+      </div>
+      <p class="text-muted" style="font-size: 0.92rem; line-height: 1.6;">
+        State changes are strictly validated server-side. Errors are logged gracefully without leaking internal stack traces or database connection strings.
+      </p>
+    </div>
+
+    <!-- Limitations & Future Enhancements -->
+    <div class="glass-panel p-4">
+      <h4 class="fw-bold mb-3"><i class="fas fa-triangle-exclamation text-warning me-2"></i>4. Academic Scope & Limitations</h4>
+      <div class="alert alert-warning py-2 mb-3" style="font-size: 0.88rem;">
+        <strong>Important Disclaimer:</strong> CyberShield AI analyzes historical or logged incident datasets. It is not an inline packet sniffer, host firewall, or replacement for commercial Security Operations Center SIEMs. Synthetic sample records are clearly flagged as demonstration data.
+      </div>
+      <h6 class="fw-bold text-cyan mt-3 mb-2">Future Enhancements:</h6>
+      <ul class="text-muted ps-3 mb-0 small" style="line-height: 1.7;">
+        <li>Integration with live Syslog / STIX / TAXII threat intelligence feeds.</li>
+        <li>Role-based access control (RBAC) with JWT session cookies and multi-factor authentication.</li>
+        <li>Automated SOAR (Security Orchestration, Automation, and Response) webhook triggers for IP blacklisting.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <!-- Academic Project Card -->
+    <div class="glass-panel p-4 mb-4">
+      <h5 class="fw-bold mb-3"><i class="fas fa-graduation-cap text-cyan me-2"></i>Academic Project Profile</h5>
+      <div class="mb-3">
+        <div class="text-muted small">Project Title:</div>
+        <div class="fw-bold text-cyan">CyberShield AI</div>
+      </div>
+      <div class="mb-3">
+        <div class="text-muted small">Domain:</div>
+        <div class="fw-semibold">Cybersecurity Analytics & Data Visualization</div>
+      </div>
+      <div class="mb-3">
+        <div class="text-muted small">Project Type:</div>
+        <div class="fw-semibold">Full-Stack Academic Mini-Project & Portfolio</div>
+      </div>
+      <div class="mb-3">
+        <div class="text-muted small">Target Release:</div>
+        <div class="fw-semibold">v2.5.0 Production Ready</div>
+      </div>
+    </div>
+
+    <!-- Technology Stack Summary -->
+    <div class="glass-panel p-4 mb-4">
+      <h5 class="fw-bold mb-3"><i class="fas fa-code text-cyan me-2"></i>Technologies</h5>
+      <ul class="list-unstyled mb-0" style="font-size: 0.9rem; line-height: 1.9;">
+        <li><i class="fab fa-python text-warning me-2"></i><strong>Python 3.14</strong> &ndash; Core Engine</li>
+        <li><i class="fas fa-server text-info me-2"></i><strong>Flask 3.1</strong> &ndash; Backend REST API</li>
+        <li><i class="fas fa-table text-primary me-2"></i><strong>Pandas & NumPy</strong> &ndash; Analytics</li>
+        <li><i class="fas fa-database text-success me-2"></i><strong>SQLite3</strong> &ndash; Storage Layer</li>
+        <li><i class="fas fa-file-pdf text-danger me-2"></i><strong>ReportLab</strong> &ndash; PDF Engine</li>
+        <li><i class="fab fa-bootstrap text-purple me-2"></i><strong>Bootstrap 5</strong> &ndash; UI Components</li>
+        <li><i class="fas fa-chart-pie text-cyan me-2"></i><strong>Chart.js 4</strong> &ndash; Visualizations</li>
+      </ul>
+    </div>
+
+    <!-- Developer Credits Card -->
+    <div class="glass-panel p-4 text-center">
+      <div class="user-avatar mx-auto mb-3" style="width: 58px; height: 58px; font-size: 1.5rem;">
+        <i class="fas fa-user-ninja"></i>
+      </div>
+      <h5 class="fw-bold mb-1">CyberShield AI Development Team</h5>
+      <p class="text-muted small mb-3">Academic Mini-Project Submission</p>
+      <div class="badge bg-secondary p-2 w-100 font-monospace">Student Developer Portfolio Edition</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

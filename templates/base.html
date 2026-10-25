@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CyberShield AI - Cybersecurity Incident Data Analysis & Visualization Platform{% endblock %}</title>
+  
+  <!-- Favicon / Shield Icon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <!-- Application CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="cyber-sidebar" id="cyberSidebar">
+      <a href="/" class="sidebar-brand">
+        <i class="fas fa-shield-virus brand-logo"></i>
+        <span>CyberShield <span style="color: var(--cyan);">AI</span></span>
+      </a>
+
+      <ul class="sidebar-menu">
+        <li>
+          <a href="/" class="sidebar-link {% if request.path == '/' %}active{% endif %}">
+            <i class="fas fa-home"></i>
+            <span>Overview</span>
+          </a>
+        </li>
+        <li>
+          <a href="/dashboard" class="sidebar-link {% if request.path == '/dashboard' %}active{% endif %}">
+            <i class="fas fa-chart-pie"></i>
+            <span>Security Dashboard</span>
+            <span class="badge bg-primary sidebar-badge">Live</span>
+          </a>
+        </li>
+        <li>
+          <a href="/incidents" class="sidebar-link {% if request.path == '/incidents' %}active{% endif %}">
+            <i class="fas fa-shield-halved"></i>
+            <span>Incident Explorer</span>
+          </a>
+        </li>
+        <li>
+          <a href="/upload" class="sidebar-link {% if request.path == '/upload' %}active{% endif %}">
+            <i class="fas fa-cloud-arrow-up"></i>
+            <span>Upload Dataset</span>
+          </a>
+        </li>
+        <li>
+          <a href="/threat-analysis" class="sidebar-link {% if request.path == '/threat-analysis' %}active{% endif %}">
+            <i class="fas fa-biohazard"></i>
+            <span>Threat Analysis</span>
+            <span class="badge bg-danger sidebar-badge">AI</span>
+          </a>
+        </li>
+        <li>
+          <a href="/visualizations" class="sidebar-link {% if request.path == '/visualizations' %}active{% endif %}">
+            <i class="fas fa-chart-column"></i>
+            <span>Visualization Studio</span>
+          </a>
+        </li>
+        <li>
+          <a href="/reports" class="sidebar-link {% if request.path == '/reports' %}active{% endif %}">
+            <i class="fas fa-file-pdf"></i>
+            <span>Reports</span>
+          </a>
+        </li>
+        <li style="margin-top: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;"></li>
+        <li>
+          <a href="/about" class="sidebar-link {% if request.path == '/about' %}active{% endif %}">
+            <i class="fas fa-circle-info"></i>
+            <span>About Project</span>
+          </a>
+        </li>
+        <li>
+          <a href="/settings" class="sidebar-link {% if request.path == '/settings' %}active{% endif %}">
+            <i class="fas fa-sliders"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="p-3 border-top border-subtle text-muted" style="font-size: 0.75rem;">
+        <div class="d-flex align-items-center gap-2">
+          <div class="pulse-dot"></div>
+          <span>Engine v2.5 Online</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Navigation -->
+      <header class="cyber-topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="topbar-btn d-lg-none" id="sidebarToggleBtn" aria-label="Toggle Navigation">
+            <i class="fas fa-bars"></i>
+          </button>
+          
+          <div class="topbar-search">
+            <i class="fas fa-magnifying-glass"></i>
+            <input type="text" id="globalSearchInput" placeholder="Search incidents, categories, systems... (Press Enter)">
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="d-none d-md-flex align-items-center gap-2 text-muted" style="font-size: 0.85rem;">
+            <i class="far fa-clock text-info"></i>
+            <span id="topbarClock">--:--:--</span>
+          </div>
+
+          <button class="topbar-btn" id="themeToggleBtn" title="Toggle Theme (Dark / Light)" aria-label="Toggle Theme">
+            <i class="fas fa-sun"></i>
+          </button>
+
+          <div class="user-profile-pill d-none d-sm-flex">
+            <div class="user-avatar">
+              <i class="fas fa-user-shield"></i>
+            </div>
+            <div style="line-height: 1.1;">
+              <div style="font-size: 0.85rem; font-weight: 700;">SOC Analyst</div>
+              <div style="font-size: 0.7rem; color: var(--text-dim);">CyberOps Console</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="page-content">
+        {% block content %}{% endblock %}
+      </main>
+
+      <!-- Footer -->
+      <footer class="p-3 text-center border-top border-subtle text-muted" style="font-size: 0.82rem;">
+        <div>CyberShield AI &copy; 2026. Academic Cybersecurity Incident Data Analysis & Visualization Platform.</div>
+        <div class="text-dim mt-1">Intended for historical event analysis and academic demonstration. Does not perform runtime live packet inspection.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <!-- Core App JS -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

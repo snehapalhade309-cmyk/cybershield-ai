@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Incident Explorer - CyberShield AI{% endblock %}
+
+{% block content %}
+<div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+  <div>
+    <h2 class="section-title">
+      <i class="fas fa-shield-halved text-cyan"></i>
+      Incident Explorer
+    </h2>
+    <div class="section-subtitle">Search, filter, manage, and investigate recorded security events</div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button class="btn btn-cyber-primary btn-sm" id="btnOpenAddIncident">
+      <i class="fas fa-plus me-1"></i> Log New Incident
+    </button>
+    <button class="btn btn-cyber-outline btn-sm" id="btnExportFilteredCsv">
+      <i class="fas fa-download me-1"></i> Export to CSV
+    </button>
+  </div>
+</div>
+
+<!-- Filters & Search Toolbar -->
+<div class="glass-panel filter-bar">
+  <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 250px;">
+    <div class="input-group input-group-sm">
+      <span class="input-group-text bg-secondary border-secondary text-muted"><i class="fas fa-search"></i></span>
+      <input type="text" id="searchIncidentInput" class="form-control" placeholder="Search by ID, category, source, asset...">
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2 flex-wrap">
+    <select id="filterCategory" class="form-select form-select-sm" style="max-width: 160px;">
+      <option value="all">All Categories</option>
+      <option value="Phishing">Phishing</option>
+      <option value="Ransomware">Ransomware</option>
+      <option value="Brute-force">Brute-force</option>
+      <option value="Denial-of-Service">Denial-of-Service</option>
+      <option value="Suspicious Login">Suspicious Login</option>
+      <option value="Data Breach">Data Breach</option>
+      <option value="Malware">Malware</option>
+      <option value="SQL Injection">SQL Injection</option>
+      <option value="Insider Threat">Insider Threat</option>
+    </select>
+
+    <select id="filterSeverity" class="form-select form-select-sm" style="max-width: 140px;">
+      <option value="all">All Severities</option>
+      <option value="Critical">Critical</option>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select>
+
+    <select id="filterStatus" class="form-select form-select-sm" style="max-width: 140px;">
+      <option value="all">All Statuses</option>
+      <option value="Open">Open</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Resolved">Resolved</option>
+      <option value="Closed">Closed</option>
+    </select>
+
+    <button id="btnApplyFilters" class="btn btn-cyber-outline btn-sm">
+      <i class="fas fa-filter me-1"></i> Filter
+    </button>
+  </div>
+</div>
+
+<!-- Incidents Table Card -->
+<div class="glass-panel p-0 overflow-hidden mb-4">
+  <div class="table-responsive">
+    <table class="cyber-table">
+      <thead>
+        <tr>
+          <th class="sortable" data-sort="incident_id" style="cursor: pointer;">
+            Incident ID <i class="fas fa-sort text-muted ms-1"></i>
+          </th>
+          <th class="sortable" data-sort="incident_date" style="cursor: pointer;">
+            Timestamp <i class="fas fa-sort-down text-info ms-1"></i>
+          </th>
+          <th class="sortable" data-sort="incident_type" style="cursor: pointer;">
+            Category <i class="fas fa-sort text-muted ms-1"></i>
+          </th>
+          <th class="sortable" data-sort="severity" style="cursor: pointer;">
+            Severity <i class="fas fa-sort text-muted ms-1"></i>
+          </th>
+          <th class="sortable" data-sort="source" style="cursor: pointer;">
+            Source <i class="fas fa-sort text-muted ms-1"></i>
+          </th>
+          <th>Affected Asset</th>
+          <th class="sortable" data-sort="status" style="cursor: pointer;">
+            Status <i class="fas fa-sort text-muted ms-1"></i>
+          </th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="incidentsTableBody">
+        <!-- Injected via incidents.js -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="p-3 d-flex justify-content-between align-items-center flex-wrap gap-2 border-top border-subtle">
+    <div id="incidentCountSummary" class="text-muted small">Loading records...</div>
+    <div id="incidentsPagination"></div>
+  </div>
+</div>
+
+<!-- Add / Edit Incident Modal -->
+<div class="modal fade" id="incidentFormModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content cyber-modal">
+      <div class="modal-header cyber-modal-header">
+        <h5 class="modal-title fw-bold" id="incidentFormModalTitle">Log New Security Incident</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="incidentForm">
+        <div class="modal-body p-4">
+          <input type="hidden" id="incidentFormId">
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Incident Timestamp *</label>
+              <input type="datetime-local" id="formDate" class="form-control" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Category / Threat Type *</label>
+              <select id="formType" class="form-select" required>
+                <option value="Phishing">Phishing</option>
+                <option value="Ransomware">Ransomware</option>
+                <option value="Brute-force">Brute-force</option>
+                <option value="Denial-of-Service">Denial-of-Service</option>
+                <option value="Suspicious Login">Suspicious Login</option>
+                <option value="Data Breach">Data Breach</option>
+                <option value="Malware">Malware</option>
+                <option value="SQL Injection">SQL Injection</option>
+                <option value="Insider Threat">Insider Threat</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Severity Rating *</label>
+              <select id="formSeverity" class="form-select" required>
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Current Status *</label>
+              <select id="formStatus" class="form-select" required>
+                <option value="Open" selected>Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Closed">Closed</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Resolution Time (Hours)</label>
+              <input type="number" step="0.1" id="formResolutionTime" class="form-control" placeholder="e.g. 3.5">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Detection Source *</label>
+              <input type="text" id="formSource" class="form-control" placeholder="e.g. SIEM, IDS/IPS, Firewall, Endpoint" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Affected Asset / System</label>
+              <input type="text" id="formSystem" class="form-control" placeholder="e.g. Domain Controller, Web Server">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Description & Threat Narrative</label>
+              <textarea id="formDescription" class="form-control" rows="3" placeholder="Provide incident narrative, indicators of compromise, or remediation details..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer cyber-modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-cyber-primary btn-sm">Save Incident</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- View Incident Details Modal -->
+<div class="modal fade" id="incidentDetailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content cyber-modal">
+      <div class="modal-header cyber-modal-header">
+        <h5 class="modal-title fw-bold">
+          <i class="fas fa-file-lines text-info me-2"></i>Incident Record <span id="viewModalId" class="text-cyan font-monospace"></span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div id="viewModalDemoBadge" class="mb-3"></div>
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="text-muted small">Category</div>
+            <div class="fw-bold" id="viewModalType"></div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted small">Timestamp</div>
+            <div class="fw-bold" id="viewModalDate"></div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted small">Severity</div>
+            <div id="viewModalSeverity"></div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted small">Status</div>
+            <div id="viewModalStatus"></div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted small">Detection Source</div>
+            <div class="fw-bold" id="viewModalSource"></div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted small">Affected Asset</div>
+            <div class="fw-bold font-monospace" id="viewModalSystem"></div>
+          </div>
+          <div class="col-12">
+            <div class="text-muted small">Resolution Duration</div>
+            <div id="viewModalResolution" class="text-info fw-semibold"></div>
+          </div>
+          <div class="col-12">
+            <div class="text-muted small">Threat Description</div>
+            <div class="p-3 rounded glass-panel text-muted" id="viewModalDescription" style="font-size: 0.9rem;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer cyber-modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content cyber-modal">
+      <div class="modal-body p-4 text-center">
+        <i class="fas fa-triangle-exclamation text-danger fs-1 mb-3"></i>
+        <h5 class="fw-bold mb-2">Delete Incident?</h5>
+        <p class="text-muted small">Are you sure you want to permanently delete incident <code id="deleteIncidentIdText" class="text-danger"></code>? This action cannot be undone.</p>
+        <div class="d-flex justify-content-center gap-2 mt-4">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger btn-sm" id="btnConfirmDelete">Delete Record</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/incidents.js') }}"></script>
+{% endblock %}

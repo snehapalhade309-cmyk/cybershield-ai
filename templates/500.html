@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}500 - System Exception - CyberShield AI{% endblock %}
+
+{% block content %}
+<div class="glass-panel p-5 text-center my-5" style="max-width: 600px; margin: 0 auto;">
+  <i class="fas fa-triangle-exclamation fs-1 text-warning mb-3" style="filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4));"></i>
+  <h1 class="fw-bold text-warning display-5">500</h1>
+  <h4 class="fw-bold mb-3">Internal Engine Exception</h4>
+  <p class="text-muted mb-4">
+    An unexpected error occurred during security computation. Database transactions have been safely rolled back.
+  </p>
+  <a href="/dashboard" class="btn btn-cyber-primary">
+    <i class="fas fa-home me-2"></i>Return to Security Dashboard
+  </a>
+</div>
+{% endblock %}

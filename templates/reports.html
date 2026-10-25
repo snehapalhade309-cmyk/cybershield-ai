@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Reports & PDF Generator - CyberShield AI{% endblock %}
+
+{% block content %}
+<div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+  <div>
+    <h2 class="section-title">
+      <i class="fas fa-file-pdf text-cyan"></i>
+      Audit & Analytical Report Center
+    </h2>
+    <div class="section-subtitle">Generate downloadable ReportLab PDF audit dossiers, CSV data dumps, or print directly</div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button class="btn btn-cyber-primary btn-sm" id="btnDownloadPdfReport">
+      <i class="fas fa-file-pdf me-1"></i> Download ReportLab PDF
+    </button>
+    <button class="btn btn-cyber-outline btn-sm" id="btnDownloadCsvReport">
+      <i class="fas fa-file-csv me-1"></i> Download CSV
+    </button>
+    <button class="btn btn-cyber-outline btn-sm" onclick="window.print()">
+      <i class="fas fa-print me-1"></i> Print View
+    </button>
+  </div>
+</div>
+
+<!-- Report Filter Customizer -->
+<div class="glass-panel filter-bar mb-4">
+  <div class="d-flex align-items-center gap-2 flex-wrap w-100">
+    <div class="d-flex align-items-center gap-1">
+      <label class="text-muted small fw-semibold">Report Title:</label>
+      <input type="text" id="reportTitleInput" class="form-control form-control-sm" value="Enterprise Cyber Security Incident Assessment" style="min-width: 280px;">
+    </div>
+
+    <div class="d-flex align-items-center gap-1">
+      <label class="text-muted small fw-semibold">Severity Filter:</label>
+      <select id="reportSeverityFilter" class="form-select form-select-sm" style="max-width: 150px;">
+        <option value="all">All Severities</option>
+        <option value="Critical">Critical Only</option>
+        <option value="High">High Only</option>
+        <option value="Medium">Medium Only</option>
+      </select>
+    </div>
+
+    <button id="btnRefreshReportPreview" class="btn btn-cyber-outline btn-sm ms-auto">
+      <i class="fas fa-sync-alt me-1"></i> Update Report Preview
+    </button>
+  </div>
+</div>
+
+<!-- Printable / Visual Report Preview Dossier -->
+<div class="glass-panel p-5 mb-4" id="printableReportCard">
+  <div class="d-flex justify-content-between align-items-start border-bottom border-subtle pb-4 mb-4 flex-wrap gap-3">
+    <div>
+      <div class="badge bg-primary text-uppercase mb-2 font-monospace">Security Operations Audit Dossier</div>
+      <h2 class="fw-bold mb-1" id="reportDisplayTitle">Enterprise Cyber Security Incident Assessment</h2>
+      <div class="text-muted small">Generated dynamically by CyberShield AI Threat Intelligence Engine</div>
+    </div>
+    <div class="text-end">
+      <div class="fw-bold text-cyan" id="reportGeneratedDate">--</div>
+      <div class="text-muted small">Classification: Internal Academic Review</div>
+    </div>
+  </div>
+
+  <!-- KPI Overview in Report -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small">Logged Incidents</div>
+        <div class="fs-3 fw-bold text-info" id="repKpiTotal">0</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small">Critical Events</div>
+        <div class="fs-3 fw-bold text-danger" id="repKpiCritical">0</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small">Resolution Ratio</div>
+        <div class="fs-3 fw-bold text-success" id="repKpiResolution">0%</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small">Mean Resolution</div>
+        <div class="fs-3 fw-bold text-warning" id="repKpiAvgTime">0h</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1: Executive Observations -->
+  <div class="mb-4">
+    <h5 class="fw-bold text-cyan mb-2">1. Executive Summary & Incident Observations</h5>
+    <p class="text-muted" id="repExecutiveText" style="line-height: 1.6;">
+      Loading analytical summary observations...
+    </p>
+  </div>
+
+  <!-- Section 2: Attack Distribution -->
+  <div class="mb-4">
+    <h5 class="fw-bold text-cyan mb-2">2. Attack Category Breakdown</h5>
+    <div class="table-responsive">
+      <table class="cyber-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Logged Count</th>
+            <th>Percentage Share</th>
+            <th>Resolved Status</th>
+          </tr>
+        </thead>
+        <tbody id="repCategoryTableBody">
+          <!-- Populated by script -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 3: Recommended Priorities -->
+  <div class="mb-4">
+    <h5 class="fw-bold text-cyan mb-2">3. Recommended Incident Investigation Priorities</h5>
+    <ul class="text-muted ps-3 mb-0" style="line-height: 1.7;">
+      <li><strong>Immediate Triage:</strong> Dispatch incident response teams to contain active Ransomware, Polymorphic Malware, and Pass-the-Hash artifacts on Domain Controllers.</li>
+      <li><strong>Boundary Defense:</strong> Enhance perimeter rate-limiting and WAF filters against repetitive SQL Injection and credential stuffing attacks originating from TOR exit ranges.</li>
+      <li><strong>Identity Auditing:</strong> Restrict off-hours access to code repositories and customer databases; enforce biometric or hardware token MFA for administrative logins.</li>
+    </ul>
+  </div>
+
+  <!-- Section 4: Academic Disclaimer -->
+  <div class="p-3 rounded glass-panel text-muted small mt-4">
+    <strong>Notice & Project Scope:</strong> This analytical assessment is generated from stored incident data records for educational demonstration and academic portfolio presentation. 
+    It illustrates data analysis workflows, descriptive KPIs, and reporting automation rather than active production packet sniffing.
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  loadReportPreview();
+
+  document.getElementById("btnRefreshReportPreview")?.addEventListener("click", loadReportPreview);
+
+  document.getElementById("btnDownloadPdfReport")?.addEventListener("click", () => {
+    const title = encodeURIComponent(document.getElementById("reportTitleInput").value.trim());
+    const sev = document.getElementById("reportSeverityFilter").value;
+    const url = `/api/reports/pdf?title=${title}&severity=${sev}`;
+    window.location.href = url;
+    showToast("Generating ReportLab PDF report...", "info");
+  });
+
+  document.getElementById("btnDownloadCsvReport")?.addEventListener("click", () => {
+    const sev = document.getElementById("reportSeverityFilter").value;
+    const url = `/api/reports/export?severity=${sev}`;
+    window.location.href = url;
+  });
+});
+
+async function loadReportPreview() {
+  const customTitle = document.getElementById("reportTitleInput").value;
+  document.getElementById("reportDisplayTitle").innerText = customTitle;
+  document.getElementById("reportGeneratedDate").innerText = new Date().toLocaleString();
+
+  const sev = document.getElementById("reportSeverityFilter").value;
+  const query = sev !== "all" ? `severity=${sev}` : "";
+
+  try {
+    const [resSummary, resCats] = await Promise.all([
+      fetch(`/api/analytics/summary?${query}`).then(r => r.json()),
+      fetch(`/api/analytics/categories?${query}`).then(r => r.json())
+    ]);
+
+    if (resSummary.success) {
+      const s = resSummary.data;
+      document.getElementById("repKpiTotal").innerText = s.total_incidents;
+      document.getElementById("repKpiCritical").innerText = s.critical_incidents;
+      document.getElementById("repKpiResolution").innerText = `${s.resolution_rate}%`;
+      document.getElementById("repKpiAvgTime").innerText = `${s.avg_resolution_time}h`;
+
+      document.getElementById("repExecutiveText").innerText = 
+        `Active incident telemetry reflects ${s.total_incidents} registered events. There are currently ${s.critical_incidents} Critical and ${s.high_incidents} High-severity incidents recorded, with an overall resolution rate of ${s.resolution_rate}% across systems. Average investigation and containment duration sits at ${s.avg_resolution_time} hours per incident.`;
+    }
+
+    if (resCats.success) {
+      const cats = resCats.data;
+      const total = cats.counts.reduce((a, b) => a + b, 0);
+      const tbody = document.getElementById("repCategoryTableBody");
+
+      tbody.innerHTML = cats.categories.map((c, i) => {
+        const count = cats.counts[i];
+        const pct = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+        return `
+          <tr>
+            <td class="fw-bold">${c}</td>
+            <td><span class="badge bg-secondary font-monospace">${count}</span></td>
+            <td>${pct}%</td>
+            <td><span class="text-success"><i class="fas fa-check-circle me-1"></i>Tracked</span></td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+  } catch (err) {
+    showToast("Error updating report preview", "danger");
+  }
+}
+</script>
+{% endblock %}

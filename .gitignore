@@ -1,0 +1,26 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pytest_cache/
+.coverage
+htmlcov/
+
+# Local databases and private instance data
+instance/*.db
+*.sqlite3
+instance/*.sqlite
+*.log
+
+# Sensitive environment variables
+.env
+
+# OS specific
+.DS_Store
+Thumbs.db
